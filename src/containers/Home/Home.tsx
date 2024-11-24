@@ -1,9 +1,8 @@
-import TransactionForm from '../../components/TransactionForm/TransactionForm';
 
 const Home = () => {
   return (
     <div className='container'>
-      <TransactionForm />
+      <h1>This is Home Page</h1>
     </div>
   );
 };

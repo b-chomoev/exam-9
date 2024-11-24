@@ -1,4 +1,14 @@
-import React, { useState } from 'react';
+import React, { MouseEventHandler, useState } from 'react';
+import ButtonLoading from '../UI/ButtonLoading/ButtonLoading';
+import { ITransactionForm } from '../../types';
+
+interface TransactionFormProps {
+  addNewTransaction: (newTransaction: ITransactionForm) => void;
+  existingTransaction?: ITransactionForm;
+  isEdit?: boolean;
+  isLoading?: boolean;
+  showModal?: MouseEventHandler<HTMLButtonElement>;
+}
 
 const initialState = {
   type: '',
@@ -6,14 +16,13 @@ const initialState = {
   amount: 0,
 };
 
-const TransactionForm = () => {
-  const [value, setValue] = useState<ITransactionForm>(initialState);
+const TransactionForm: React.FC<TransactionFormProps> = ({addNewTransaction, existingTransaction = initialState, isEdit = false, isLoading = false, showModal }) => {
+  const [newTransaction, setNewTransaction] = useState<ITransactionForm>(existingTransaction);
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
-    setValue(prevState => {
+  const onChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+    setNewTransaction(prevState => {
       return {
         ...prevState,
-        amount: Number(value.amount),
         [e.target.name]: e.target.value,
       };
     });
@@ -22,7 +31,18 @@ const TransactionForm = () => {
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log(value);
+    if (newTransaction.type.trim().length === 0 && newTransaction.category.trim().length === 0 && newTransaction.amount < 0) {
+      alert("Fill in the blank");
+    } else {
+      addNewTransaction({
+        ...newTransaction,
+        amount: Number(newTransaction.amount),
+      });
+
+      if (!isEdit) {
+        setNewTransaction(initialState);
+      }
+    }
   };
 
   return (
@@ -35,8 +55,8 @@ const TransactionForm = () => {
             className="form-select"
             aria-label="Default select example"
             name='type'
-            onChange={handleChange}
-            value={value.type}
+            onChange={onChange}
+            value={newTransaction.type}
           >
             <option selected>Choose type of your transaction</option>
             <option value="income">Income</option>
@@ -46,13 +66,13 @@ const TransactionForm = () => {
 
         <div className='form-group mb-2'>
           <label htmlFor="category">Category</label>
-          {value.type === 'income' ? (
+          {newTransaction.type === 'income' ? (
             <select
               className="form-select"
               aria-label="Default select example"
               name='category'
-              onChange={handleChange}
-              value={value.category}
+              onChange={onChange}
+              value={newTransaction.category}
             >
               <option selected>Choose type of income transaction</option>
               <option value="salary">Salary</option>
@@ -64,8 +84,8 @@ const TransactionForm = () => {
               className="form-select"
               aria-label="Default select example"
               name='category'
-              onChange={handleChange}
-              value={value.category}
+              onChange={onChange}
+              value={newTransaction.category}
             >
               <option selected>Choose type of expenses transaction</option>
               <option value="food">Food</option>
@@ -75,20 +95,22 @@ const TransactionForm = () => {
           )}
         </div>
 
-        <div>
+        <div className='form-group mb-2'>
           <label htmlFor="amount">Amount</label>
           <input
             type="number"
             id='amount'
             name='amount'
-            onChange={handleChange}
-            value={value.amount}
+            onChange={onChange}
+            value={newTransaction.amount}
             className='form-control'
             required
           />
         </div>
-
-        <button className='btn btn-primary mt-2'>Save</button>
+        <div className='d-flex'>
+          <ButtonLoading text={'Save'} isLoading={isLoading} isDisabled={isLoading} showModal={showModal}/>
+          <button type='button' className='ms-2 btn btn-danger' onClick={showModal}>Close</button>
+        </div>
       </form>
     </div>
   );

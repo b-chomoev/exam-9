@@ -1,9 +1,32 @@
 import { NavLink } from 'react-router-dom';
 import './NavBar.css';
+import Modal from '../UI/Modal/Modal';
+import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { selectAddTransactionLoading } from '../../store/slices/transactionSlice';
+import { createTransaction } from '../../store/thunks/transactionThunks';
+import { ApiTransaction } from '../../types';
+import TransactionForm from '../TransactionForm/TransactionForm';
 
 const NavBarAdmin = () => {
+  const [showModal, setShowModal] = useState(false);
+  const dispatch = useAppDispatch();
+  const addLoading = useAppSelector(selectAddTransactionLoading);
+
+  const addNewTransaction = async (transaction: ApiTransaction) => {
+    await dispatch(createTransaction({...transaction}));
+  };
+
   return (
-    <>
+    <div>
+      <Modal show={showModal} closeModal={() => setShowModal(false)} defaultModalBtn={false}>
+        <div className="modal-body">
+          <div>
+            <TransactionForm addNewTransaction={addNewTransaction} isLoading={addLoading} showModal={() => setShowModal(false)}/>
+          </div>
+        </div>
+      </Modal>
+
       <nav className="navbar navbar-expand-lg bg-primary">
         <div className="container">
           <NavLink to="/" className="text-decoration-none"><span
@@ -15,13 +38,13 @@ const NavBarAdmin = () => {
                 <NavLink className="nav-link" to="/categories">Categories</NavLink>
               </li>
               <li className="nav-item">
-                <button className='btn btn-link nav-link'>Add</button>
+                <button className='btn btn-link nav-link' onClick={() => setShowModal(true)}>Add</button>
               </li>
             </ul>
           </div>
         </div>
       </nav>
-    </>
+    </div>
   );
 };
 
