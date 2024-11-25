@@ -14,6 +14,7 @@ const initialState = {
   type: '',
   category: '',
   amount: 0,
+  date: '',
 };
 
 const TransactionForm: React.FC<TransactionFormProps> = ({addNewTransaction, existingTransaction = initialState, isEdit = false, isLoading = false, showModal }) => {
@@ -30,6 +31,8 @@ const TransactionForm: React.FC<TransactionFormProps> = ({addNewTransaction, exi
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const now = new Date();
+    const createdAt = now.toISOString();
 
     if (newTransaction.type.trim().length === 0 && newTransaction.category.trim().length === 0 && newTransaction.amount < 0) {
       alert("Fill in the blank");
@@ -37,6 +40,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({addNewTransaction, exi
       addNewTransaction({
         ...newTransaction,
         amount: Number(newTransaction.amount),
+        date: createdAt,
       });
 
       if (!isEdit) {
@@ -75,9 +79,9 @@ const TransactionForm: React.FC<TransactionFormProps> = ({addNewTransaction, exi
               value={newTransaction.category}
             >
               <option selected>Choose type of income transaction</option>
-              <option value="salary">Salary</option>
-              <option value="trading">Trading</option>
-              <option value="bonus">Bonus</option>
+              <option value="Salary">Salary</option>
+              <option value="Trading">Trading</option>
+              <option value="Bonus">Bonus</option>
             </select>
           ) : (
             <select
@@ -88,9 +92,9 @@ const TransactionForm: React.FC<TransactionFormProps> = ({addNewTransaction, exi
               value={newTransaction.category}
             >
               <option selected>Choose type of expenses transaction</option>
-              <option value="food">Food</option>
-              <option value="rent">Rent</option>
-              <option value="education">Education</option>
+              <option value="Food">Food</option>
+              <option value="Rent">Rent</option>
+              <option value="Education">Education</option>
             </select>
           )}
         </div>
