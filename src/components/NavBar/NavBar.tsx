@@ -4,7 +4,7 @@ import Modal from '../UI/Modal/Modal';
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectAddTransactionLoading } from '../../store/slices/transactionSlice';
-import { createTransaction } from '../../store/thunks/transactionThunks';
+import { createTransaction, fetchAllTransactions } from '../../store/thunks/transactionThunks';
 import { ApiTransaction } from '../../types';
 import TransactionForm from '../TransactionForm/TransactionForm';
 
@@ -15,6 +15,7 @@ const NavBarAdmin = () => {
 
   const addNewTransaction = async (transaction: ApiTransaction) => {
     await dispatch(createTransaction({...transaction}));
+    await dispatch(fetchAllTransactions());
   };
 
   return (

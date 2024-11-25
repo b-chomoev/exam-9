@@ -34,3 +34,23 @@ export const deleteTransaction = createAsyncThunk<void, string>(
     await axiosAPI.delete(`transactions/${id}.json`);
   }
 );
+
+export const getOneTransaction = createAsyncThunk(
+  'transaction/getOneTransaction',
+  async (id: string) =>{
+    const response = await axiosAPI.get<ITransaction | null>(`transactions/${id}.json`);
+
+    if (!response.data) {
+      return null;
+    }
+
+    return response.data;
+  }
+);
+
+export const editTransaction = createAsyncThunk<void, {transactionId: string, transaction: ApiTransaction}>(
+  'transaction/editTransaction',
+  async ({transactionId, transaction}) => {
+    await axiosAPI.put(`transactions/${transactionId}.json`, {...transaction});
+  }
+);
