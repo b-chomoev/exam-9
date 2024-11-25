@@ -1,9 +1,13 @@
 
 const CategoryPage = () => {
+
   return (
-    <div>
-      This is CategoryPage
-    </div>
+    <>
+      <div className='d-flex align-items-center justify-content-between'>
+        <h3>Categories</h3>
+        <button className='btn btn-primary'>Add</button>
+      </div>
+    </>
   );
 };
 

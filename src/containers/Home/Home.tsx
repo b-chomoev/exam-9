@@ -49,7 +49,8 @@ const Home = () => {
   }, [fetchTransactionsFromServer]);
 
   const deleteTransactionById = async (id: string) => {
-    if (id) {
+    const userAnswer = window.confirm('Are you sure you want to delete this transaction?');
+    if (id && userAnswer) {
       await dispatch(deleteTransaction(id));
     }
     await fetchTransactionsFromServer();
